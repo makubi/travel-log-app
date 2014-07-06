@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.joda.time.DateTime;
+
 
 public class MainActivity extends Activity {
 
@@ -32,5 +34,18 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new NetworkClient().uploadFile(new UploadImage(new DateTime(), "fooBar", "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg"));
+            }
+        }).start();
+
     }
 }

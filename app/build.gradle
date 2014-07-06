@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 'android-L'
+    compileSdkVersion 18
     buildToolsVersion "20.0.0"
 
     defaultConfig {
         applicationId "at.droelf.travellogapp"
-        minSdkVersion 19
-        targetSdkVersion 'L'
+        minSdkVersion 18
+        targetSdkVersion 18
         versionCode 1
         versionName "1.0"
     }
@@ -17,8 +17,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/notice.txt'
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
+    compile 'joda-time:joda-time:2.3'
+
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.4.1.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.4.1'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.1'
 }
