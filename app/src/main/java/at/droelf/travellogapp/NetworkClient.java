@@ -2,14 +2,16 @@ package at.droelf.travellogapp;
 
 import android.util.Log;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpAuthentication;
 import org.springframework.http.HttpBasicAuthentication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
@@ -22,44 +24,62 @@ import java.util.List;
 
 public class NetworkClient {
 
-    final RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    final String apiImageUploadBase = "http://k2:9000/api/images/uploadImage";
+    private final String apiImageUploadBase = "http://k2:9000/api/images/uploadImage";
+    private final String imageFileFormKey = "file";
 
-    final String username = "admin";
-    final String password = "1234";
+    private final String apiGpxDataUpload = "http://k2:9000/api/tracks/upload/";
 
-    final HttpHeaders requestHeaders;
+    private final String username = "admin";
+    private final String password = "1234";
+
+    private final HttpHeaders requestHeadersWithAuth;
 
     public NetworkClient() {
-        HttpAuthentication authHeader = new HttpBasicAuthentication("admin", "1234");
+        final HttpAuthentication authHeader = new HttpBasicAuthentication(username, password);
 
-        requestHeaders = new HttpHeaders();
-        requestHeaders.setAuthorization(authHeader);
+        requestHeadersWithAuth = new HttpHeaders();
+        requestHeadersWithAuth.setAuthorization(authHeader);
 
 
         restTemplate = new RestTemplate();
 
-        List<HttpMessageConverter<?>> add = restTemplate.getMessageConverters();
-        add.add(new ResourceHttpMessageConverter());
-        add.add(new StringHttpMessageConverter());
-        add.add(new FormHttpMessageConverter());
+        final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        messageConverters.add(new ResourceHttpMessageConverter());
+        messageConverters.add(new StringHttpMessageConverter());
+        messageConverters.add(new FormHttpMessageConverter());
     }
 
-    void uploadFile(UploadImage uploadImage) {
-        final String dateString = getDateTimeAsStringForImageUpload(uploadImage.dateTime);
-        final String url = apiImageUploadBase + "/" + dateString + "/" + uploadImage.name;
-        final String imagePath = uploadImage.imagePath;
+    boolean uploadImage(LocalDateTime dateTime, String timezone, String name, String imagePath) {
+        final String url = apiImageUploadBase + "/" + getLocalDateTimeAsStringForImageUpload(dateTime) + timezone + "/" + name;
 
+        return putFileToUrlWithAuth(url, imagePath);
+    }
+
+    boolean uploadGpxData(String activity, String timezone, String pathToFile) {
+        final String url = apiGpxDataUpload + "/" + timezone + "/" + activity;
+
+        return putFileToUrlWithAuth(url, pathToFile);
+    }
+
+    boolean putFileToUrlWithAuth(String url, String filePath) {
         final MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
-        parts.add("file", new FileSystemResource(imagePath));
+        parts.add(imageFileFormKey, new FileSystemResource(filePath));
 
-        final HttpEntity<?> requestEntity = new HttpEntity<Object>(parts, requestHeaders);
+        final HttpEntity<?> requestEntity = new HttpEntity<Object>(parts, requestHeadersWithAuth);
 
-        restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Void.class);
+        Log.d("Network", "Putting file " + filePath + " to " + url);
+
+        ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Void.class);
+        return response.getStatusCode() == HttpStatus.OK;
     }
 
-    private String getDateTimeAsStringForImageUpload(DateTime dateTime) {
-        return DateTimeUtils.dateTimeToIsoString(dateTime);
+    private String getTimeZoneForGpxDataUpload(DateTimeZone dateTimeZone) {
+        return "";
+    }
+
+    private String getLocalDateTimeAsStringForImageUpload(LocalDateTime dateTime) {
+        return DateTimeUtils.localDateTimeToIsoString(dateTime);
     }
 }

@@ -2,7 +2,6 @@ package at.droelf.travellogapp;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.util.Log;
 
 import org.springframework.web.client.RestClientException;
 
@@ -19,9 +18,11 @@ public class ImageUploadAndroidService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         for (UploadImage uploadImage : imageUploadService.getQueuedImages()) {
             try {
-                networkClient.uploadFile(uploadImage);
+                boolean successfulUpload = networkClient.uploadImage(uploadImage.dateTime, uploadImage.timezone, uploadImage.name, uploadImage.imagePath);
 
-                imageUploadService.setImageUploaded(uploadImage);
+                if(successfulUpload) {
+                    imageUploadService.setImageUploaded(uploadImage);
+                }
             }
             catch (RestClientException e) {
                 e.printStackTrace();

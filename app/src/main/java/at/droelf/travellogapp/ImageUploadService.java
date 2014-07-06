@@ -6,6 +6,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.File;
@@ -24,14 +25,17 @@ public class ImageUploadService {
         return INSTANCE;
     }
 
-    void queueImageUpload(String name, DateTime imageTakenDateTime, String localImagePath) {
+    void queueImageUpload(String name, LocalDateTime imageTakenDateTime, String timezone, String localImagePath) {
         SQLiteDatabase database = databaseOpenHelper.getWritableDatabase();
 
         database.beginTransaction();
 
+
+        // TODO save timezone
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", name);
-        contentValues.put("dateTime", DateTimeUtils.dateTimeToIsoString(imageTakenDateTime));
+        contentValues.put("dateTime", DateTimeUtils.localDateTimeToIsoString(imageTakenDateTime));
         contentValues.put("localImagePath", localImagePath);
 
         DatabaseHelper.insert(database, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, contentValues);
@@ -55,10 +59,11 @@ public class ImageUploadService {
 
         while(query.moveToNext()) {
             final String name = query.getString(nameIndex);
-            final DateTime dateTime = DateTimeUtils.iosStringToDateTime(query.getString(dateTimeIndex));
+            final LocalDateTime dateTime = DateTimeUtils.iosStringToLocalDateTime(query.getString(dateTimeIndex));
             final String localImagePath = query.getString(localImagePathIndex);
 
-            uploadImageList.add(new UploadImage(dateTime, name, localImagePath));
+            // TODO get timezone
+            uploadImageList.add(new UploadImage(dateTime, null, name, localImagePath));
         }
 
         query.close();
@@ -74,7 +79,8 @@ public class ImageUploadService {
 
         database.beginTransaction();
 
-        DatabaseHelper.delete(database, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, "dateTime=?", new String[]{DateTimeUtils.dateTimeToIsoString(uploadImage.dateTime)});
+        // TODO delete for id
+        DatabaseHelper.delete(database, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, "dateTime=?", new String[]{DateTimeUtils.localDateTimeToIsoString(uploadImage.dateTime)});
 
         database.setTransactionSuccessful();
         database.endTransaction();

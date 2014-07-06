@@ -8,6 +8,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
+import org.joda.time.Partial;
+import org.joda.time.Period;
+
+import java.util.TimeZone;
+
+import javax.xml.datatype.Duration;
 
 
 public class MainActivity extends Activity {
@@ -46,14 +54,16 @@ public class MainActivity extends Activity {
 
         ColumnStringBuilder builder = new ColumnStringBuilder();
 
-        imageUploadService.queueImageUpload("fooBar2", new DateTime(), "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg");
+        imageUploadService.queueImageUpload("fooBar2", new LocalDateTime(), "+02:00", "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg");
 
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-//                new NetworkClient().uploadFile(new UploadImage(new DateTime(), "fooBar", "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg"));
+//                new NetworkClient().uploadImage(new UploadImage(new DateTime(), "fooBar", "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg"));
 //            }
 //        }).start();
+
+        Log.d("foobar", DateTimeUtils.localDateTimeToIsoString(new LocalDateTime()));
 
         new Thread(new Runnable() {
             @Override
