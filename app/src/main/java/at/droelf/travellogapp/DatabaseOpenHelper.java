@@ -2,6 +2,7 @@ package at.droelf.travellogapp;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
@@ -12,6 +13,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 	private static final int CURRENT_DATABASE_VERSION = 2;
 
     final static String DATABASE_NAME = "travelLogDb";
+
+    public static final String QUEUED_IMAGE_UPLOADS_TABLE = "QUEUED_IMAGE_UPLOADS";
 
     private DatabaseOpenHelper() {
 		super(AppStatics.context, DATABASE_NAME, null, CURRENT_DATABASE_VERSION);
@@ -31,8 +34,15 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         db.beginTransaction();
 
         if(oldVersion < 2) {
-            // TODO column string builder
-            DatabaseHelper.createTable(db, "QUEUED_IMAGE_UPLOADS", "_id INTEGER PRIMARY KEY, name TEXT, localImagePath TEXT, dateTime TEXT, (UNIQUE (localImagePath) ON CONFLICT REPLACE)");
+            final String columnString = new ColumnStringBuilder()
+                    .addColumn("_id", ColumnType.INTEGER)
+                    .addColumn("name", ColumnType.TEXT)
+                    .addColumn("localImagePath", ColumnType.TEXT)
+                    .addColumn("dateTime", ColumnType.TEXT)
+                    .addConstraint("_id", ColumnConstraint.PRIMARY_KEY)
+                    .build();
+
+            DatabaseHelper.createTable(db, QUEUED_IMAGE_UPLOADS_TABLE, columnString);
         }
 
         db.setTransactionSuccessful();

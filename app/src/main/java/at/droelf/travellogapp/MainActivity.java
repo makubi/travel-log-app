@@ -1,7 +1,9 @@
 package at.droelf.travellogapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -9,6 +11,8 @@ import org.joda.time.DateTime;
 
 
 public class MainActivity extends Activity {
+
+    private final ImageUploadService imageUploadService = ImageUploadService.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +44,28 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
+        ColumnStringBuilder builder = new ColumnStringBuilder();
+
+        imageUploadService.queueImageUpload("fooBar2", new DateTime(), "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg");
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                new NetworkClient().uploadFile(new UploadImage(new DateTime(), "fooBar", "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg"));
+//            }
+//        }).start();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                new NetworkClient().uploadFile(new UploadImage(new DateTime(), "fooBar", "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg"));
+                try {
+                    Thread.sleep(1000);
+
+                    startService(new Intent(AppStatics.context, ImageUploadAndroidService.class));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
-
     }
 }

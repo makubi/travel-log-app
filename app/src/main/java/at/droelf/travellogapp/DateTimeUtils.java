@@ -9,4 +9,8 @@ public class DateTimeUtils {
         return ISODateTimeFormat.dateTimeNoMillis().print(dateTime);
     }
 
+    static DateTime iosStringToDateTime(String isoString) {
+        return ISODateTimeFormat.dateTimeNoMillis().parseDateTime(isoString);
+    }
+
 }
