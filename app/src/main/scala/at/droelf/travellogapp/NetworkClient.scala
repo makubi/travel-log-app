@@ -13,33 +13,33 @@ class NetworkClient {
     val authHeader: HttpAuthentication = new HttpBasicAuthentication(username, password)
     val requestHeadersWithAuth = new HttpHeaders
     requestHeadersWithAuth.setAuthorization(authHeader)
+
     val restTemplate = new RestTemplate
+
     val messageConverters: java.util.List[HttpMessageConverter[_]] = restTemplate.getMessageConverters
     messageConverters.add(new ResourceHttpMessageConverter)
     messageConverters.add(new StringHttpMessageConverter)
     messageConverters.add(new FormHttpMessageConverter)
 
-  private[travellogapp] def uploadImage(dateTime: LocalDateTime, timezone: String, name: String, imagePath: String): Boolean = {
+  private[travellogapp] def uploadImage(dateTime: LocalDateTime, timezone: String, name: String, imagePath: String) = {
     val url: String = apiImageUploadBase + "/" + getLocalDateTimeAsStringForImageUpload(dateTime) + timezone + "/" + name
-    return putFileToUrlWithAuth(url, imagePath)
+    putFileToUrlWithAuth(url, imagePath)
   }
 
-  private[travellogapp] def uploadGpxData(activity: String, timezone: String, pathToFile: String): Boolean = {
+  private[travellogapp] def uploadGpxData(activity: String, timezone: String, pathToFile: String) = {
     val url: String = apiGpxDataUpload + "/" + timezone + "/" + activity
-    return putFileToUrlWithAuth(url, pathToFile)
+    putFileToUrlWithAuth(url, pathToFile)
   }
 
-  private[travellogapp] def putFileToUrlWithAuth(url: String, filePath: String): Boolean = {
+  private[travellogapp] def putFileToUrlWithAuth(url: String, filePath: String): HttpStatus = {
     val parts: MultiValueMap[String, AnyRef] = new LinkedMultiValueMap[String, AnyRef]
     parts.add(imageFileFormKey, new FileSystemResource(filePath))
+
     val requestEntity: HttpEntity[_] = new HttpEntity[AnyRef](parts, requestHeadersWithAuth)
     Log.d("Network", "Putting file " + filePath + " to " + url)
-    val response: ResponseEntity[Void] = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, classOf[Void])
-    return response.getStatusCode eq HttpStatus.OK
-  }
 
-  private def getTimeZoneForGpxDataUpload(dateTimeZone: DateTimeZone): String = {
-    return ""
+    val response: ResponseEntity[Void] = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, classOf[Void])
+    return response.getStatusCode
   }
 
   private def getLocalDateTimeAsStringForImageUpload(dateTime: LocalDateTime): String = {

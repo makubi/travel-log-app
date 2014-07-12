@@ -8,7 +8,7 @@ import android.util.Log
 object DatabaseHelper {
   def update(database: SQLiteDatabase, table: String, values: ContentValues, whereClause: String, whereArgs: Array[String]) {
     val escapedTable: String = getSQLEscapeString(table)
-    Log.d("Database", "Updating " + database.getPath + ", " + escapedTable + ", " + whereClause + ", " + whereArgs + ", " + values)
+    Log.d("Database", "Updating " + database.getPath + ", " + escapedTable + ", " + whereClause + ", [" + whereArgs.mkString(",") + "], " + values)
     database.update(escapedTable, values, whereClause, whereArgs)
   }
 
@@ -51,7 +51,7 @@ object DatabaseHelper {
 
   def delete(database: SQLiteDatabase, table: String, whereClause: String, whereArgs: Array[String]) {
     val escapedTable: String = getSQLEscapeString(table)
-    Log.d("Database", "Deleting " + database.getPath + ", " + escapedTable + ", " + whereClause + ", " + whereArgs)
+    Log.d("Database", "Deleting " + database.getPath + ", " + escapedTable + ", " + whereClause + ", [" + whereArgs.mkString(",") + "]")
     database.delete(escapedTable, whereClause, whereArgs)
   }
 

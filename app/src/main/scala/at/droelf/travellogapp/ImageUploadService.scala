@@ -29,6 +29,7 @@ class ImageUploadService {
       contentValues.put("name", name)
       contentValues.put("dateTime", DateTimeUtils.localDateTimeToIsoString(imageTakenDateTime))
       contentValues.put("localImagePath", localImagePath)
+      contentValues.put("timeZone", timezone)
 
       DatabaseHelper.insert(database, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, contentValues)
 
@@ -44,16 +45,20 @@ class ImageUploadService {
 
       val query: Cursor = DatabaseHelper.query(database, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE)
 
+      val idIndex: Int = query.getColumnIndex("_id")
       val nameIndex: Int = query.getColumnIndex("name")
       val dateTimeIndex: Int = query.getColumnIndex("dateTime")
       val localImagePathIndex: Int = query.getColumnIndex("localImagePath")
+      val timezoneIndex = query.getColumnIndex("timeZone")
 
       while (query.moveToNext) {
+        val id = query.getLong(idIndex)
         val name = query.getString(nameIndex)
         val dateTime = DateTimeUtils.iosStringToLocalDateTime(query.getString(dateTimeIndex))
         val localImagePath = query.getString(localImagePathIndex)
+        val timeZone = query.getString(timezoneIndex)
 
-        uploadImageList.add(UploadImage(dateTime, null, name, localImagePath))
+        uploadImageList.add(UploadImage(id, dateTime, timeZone, name, localImagePath))
       }
 
       query.close
@@ -63,11 +68,11 @@ class ImageUploadService {
     }).toList
   }
 
-  private[travellogapp] def setImageUploaded(uploadImage: UploadImage) {
+  def setImageUploaded(id: Long) {
     val database: SQLiteDatabase = databaseOpenHelper.getWritableDatabase
 
     execInTransaction[Unit](database, {
-      DatabaseHelper.delete(database, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, "dateTime=?", Array[String](DateTimeUtils.localDateTimeToIsoString(uploadImage.dateTime)))
+      DatabaseHelper.delete(database, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, "_id=?", Array[String](id.toString))
     })
   }
 

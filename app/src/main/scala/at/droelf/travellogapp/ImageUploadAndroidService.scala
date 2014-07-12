@@ -2,27 +2,27 @@ package at.droelf.travellogapp
 
 import android.app.IntentService
 import android.content.Intent
+import org.springframework.http.HttpStatus
 import org.springframework.web.client.RestClientException
+
+import scala.util.{Failure, Success, Try}
 
 class ImageUploadAndroidService extends IntentService("ImageUploadAndroidService") {
 
+  val imageUploadService: ImageUploadService = ImageUploadService.getInstance
+  val networkClient: NetworkClient = new NetworkClient
+
   protected def onHandleIntent(intent: Intent) {
-    import scala.collection.JavaConversions._
-    for (uploadImage <- imageUploadService.getQueuedImages) {
-      try {
-        val successfulUpload: Boolean = networkClient.uploadImage(uploadImage.dateTime, uploadImage.timezone, uploadImage.name, uploadImage.imagePath)
-        if (successfulUpload) {
-          imageUploadService.setImageUploaded(uploadImage)
-        }
+    imageUploadService.getQueuedImages.map( queuedImage => {
+
+      Try[HttpStatus] {
+        networkClient.uploadImage(queuedImage.dateTime, queuedImage.timezone, queuedImage.name, queuedImage.imagePath)
+      } match {
+        case Success(httpStatus) => if(httpStatus == HttpStatus.OK) imageUploadService.setImageUploaded(queuedImage.id)
+        case Failure(e) => e.printStackTrace()
       }
-      catch {
-        case e: RestClientException => {
-          e.printStackTrace
-        }
-      }
-    }
+
+    })
   }
 
-  private final val imageUploadService: ImageUploadService = ImageUploadService.getInstance
-  private final val networkClient: NetworkClient = new NetworkClient
 }
