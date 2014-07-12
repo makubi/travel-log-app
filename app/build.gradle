@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android'
+apply plugin: 'android-scala'
 
 android {
     compileSdkVersion 18
@@ -15,6 +17,25 @@ android {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            runProguard true
+            proguardFile file('proguard-rules.txt')
+        }
+    }
+
+    sourceSets {
+        main {
+            scala {
+                srcDir "src/main/scala" // default: "src/main/scala"
+            }
+        }
+
+        androidTest {
+            scala {
+                srcDir "src/androidTest/scala" // default: "src/androidTest/scala"
+            }
         }
     }
 
@@ -35,4 +56,25 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.1.1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.4.1'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.1'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "http://saturday06.github.io/gradle-android-scala-plugin/repository/snapshot"
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12+'
+        classpath 'jp.leafytree.gradle:gradle-android-scala-plugin:1.0-SNAPSHOT'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.11.1'
 }

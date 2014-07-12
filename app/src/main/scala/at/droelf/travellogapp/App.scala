@@ -3,10 +3,9 @@ package at.droelf.travellogapp;
 import android.app.Application;
 import android.util.Log;
 
-public class App extends Application {
+class App extends Application {
 
-    @Override
-    public void onCreate() {
+    override def onCreate() {
         super.onCreate();
 
         AppStatics.context = getApplicationContext();
