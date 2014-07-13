@@ -1,8 +1,8 @@
-package at.droelf.travellogapp
+package at.droelf.travellogapp.backend.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
-import android.database.{DatabaseUtils, Cursor}
+import android.database.{Cursor, DatabaseUtils}
 import android.util.Log
 
 object DatabaseHelper {

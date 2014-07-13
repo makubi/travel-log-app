@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme"
         android:name=".App">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,13 +18,13 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".NetworkChangeListener">
+        <receiver android:name=".backend.android.NetworkChangeListener">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".ImageUploadAndroidService" />
+        <service android:name=".backend.android.ImageUploadAndroidService" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>

@@ -1,10 +1,11 @@
-package at.droelf.travellogapp
+package at.droelf.travellogapp.backend.network
 
 import android.util.Log
-import org.joda.time.{DateTimeZone, LocalDateTime}
+import at.droelf.travellogapp.DateTimeUtils
+import org.joda.time.LocalDateTime
 import org.springframework.core.io.FileSystemResource
-import org.springframework.http.converter.{HttpMessageConverter, FormHttpMessageConverter, StringHttpMessageConverter, ResourceHttpMessageConverter}
 import org.springframework.http._
+import org.springframework.http.converter.{FormHttpMessageConverter, HttpMessageConverter, ResourceHttpMessageConverter, StringHttpMessageConverter}
 import org.springframework.util.{LinkedMultiValueMap, MultiValueMap}
 import org.springframework.web.client.RestTemplate
 

@@ -1,7 +1,7 @@
-package at.droelf.travellogapp
+package at.droelf.travellogapp.backend.db
 
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
+import android.database.sqlite.{SQLiteDatabase, SQLiteOpenHelper}
+import at.droelf.travellogapp.{AppStatics, ColumnConstraint, ColumnStringBuilder, ColumnType}
 
 object DatabaseOpenHelper {
   def getInstance: DatabaseOpenHelper = {

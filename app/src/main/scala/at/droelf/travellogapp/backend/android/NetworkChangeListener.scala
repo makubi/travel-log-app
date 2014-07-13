@@ -1,7 +1,7 @@
-package at.droelf.travellogapp
+package at.droelf.travellogapp.backend.android
 
-import android.content.{Intent, Context, BroadcastReceiver}
-import android.net.{NetworkInfo, ConnectivityManager}
+import android.content.{BroadcastReceiver, Context, Intent}
+import android.net.{ConnectivityManager, NetworkInfo}
 import android.util.Log
 
 class NetworkChangeListener extends BroadcastReceiver {

@@ -1,10 +1,13 @@
-package at.droelf.travellogapp
+package at.droelf.travellogapp.ui
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.{MenuItem, Menu}
+import android.view.{Menu, MenuItem}
+import at.droelf.travellogapp._
+import at.droelf.travellogapp.backend.ImageUploadService
+import at.droelf.travellogapp.backend.android.ImageUploadAndroidService
 import org.joda.time.LocalDateTime
 
 class MainActivity extends Activity {
