@@ -1,7 +1,7 @@
 package at.droelf.travellogapp.backend.db
 
 import android.database.sqlite.{SQLiteDatabase, SQLiteOpenHelper}
-import at.droelf.travellogapp.{AppStatics, ColumnConstraint, ColumnStringBuilder, ColumnType}
+import at.droelf.travellogapp._
 
 object DatabaseOpenHelper {
   def getInstance: DatabaseOpenHelper = {
@@ -28,8 +28,8 @@ class DatabaseOpenHelper extends SQLiteOpenHelper(AppStatics.context, DatabaseOp
   private def upgradeDb(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
     db.beginTransaction
     if (oldVersion < 2) {
-      val columnString = new ColumnStringBuilder().addColumn("_id", ColumnType.INTEGER).addColumn("name", ColumnType.TEXT).addColumn("localImagePath", ColumnType.TEXT).addColumn("dateTime", ColumnType.TEXT).addColumn("timeZone", ColumnType.TEXT).addConstraint("_id", ColumnConstraint.PRIMARY_KEY).build
-      DatabaseHelper.createTable(db, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, columnString)
+      val uploadImageTable = new UploadImageTable(db)
+      uploadImageTable.createTable()
     }
     db.setTransactionSuccessful
     db.endTransaction

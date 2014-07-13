@@ -34,7 +34,6 @@ class MainActivity extends Activity {
 
   protected override def onStart {
     super.onStart
-    val builder: ColumnStringBuilder = new ColumnStringBuilder
     imageUploadService.queueImageUpload("fooBar2", new LocalDateTime, "+02:00", "/storage/emulated/0/DCIM/Camera/IMG_20140619_051510.jpg")
     Log.d("foobar", DateTimeUtils.localDateTimeToIsoString(new LocalDateTime))
     new Thread(new Runnable {

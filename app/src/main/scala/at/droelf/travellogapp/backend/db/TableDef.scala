@@ -3,13 +3,17 @@ package at.droelf.travellogapp.backend.db
 import java.util
 
 import android.content.ContentValues
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
-import android.database.{Cursor, DatabaseUtils}
-import android.util.Log
-import at.droelf.travellogapp.{UploadImage, ColumnType}
+import at.droelf.travellogapp.{ColumnConstraint, ColumnType}
+
 import scala.collection.JavaConversions._
 
-class Table(database: SQLiteDatabase, name: String, columnDefs: List[ColumnDef]) {
+class Table(database: SQLiteDatabase, tableDef: TableDef) {
+
+  val name = tableDef.name
+  val columnDefs = tableDef.columnDefs
+  val columnConstraintDefs = tableDef.constraintDefs
 
   def selectAll() = {
     val allRowData = new util.ArrayList[RowData]()
@@ -37,14 +41,35 @@ class Table(database: SQLiteDatabase, name: String, columnDefs: List[ColumnDef])
     allRowData.toList
   }
 
-  def insert(database: SQLiteDatabase, contentValues: ContentValues) {
+  def insert(contentValues: ContentValues) {
     DatabaseHelper.insert(database, name, contentValues)
+  }
+
+  def createTable() {
+    val columnDefString = columnDefs.map( columnDef => {
+      s"${columnDef.name} ${columnDef.columnType.getText}"
+    })
+
+    val constraintDefString = columnConstraintDefs.map( columnConstraintDef => {
+      columnConstraintDef.constraint match {
+        case ColumnConstraint.PRIMARY_KEY => {
+          s"${columnConstraintDef.constraint.getText} (${columnConstraintDef.columns.map(_.name).mkString(", ")})"
+        }
+        case _ => throw new RuntimeException("Unknown column constraint: " + columnConstraintDef.constraint)
+      }
+    })
+
+    val columnString = (columnDefString ::: constraintDefString).mkString(", ")
+
+    DatabaseHelper.createTable(database, name, columnString)
   }
 }
 
 case class ColumnDef(name: String, columnType: ColumnType)
 
-case class TableDef(name: String, columnDefs: List[ColumnDef])
+case class TableDef(name: String, columnDefs: List[ColumnDef], constraintDefs: List[ColumnConstraintDef] = Nil)
+
+case class ColumnConstraintDef(columns: List[ColumnDef], constraint: ColumnConstraint)
 
 case class ColumnData(columnDef: ColumnDef, data: Any)
 

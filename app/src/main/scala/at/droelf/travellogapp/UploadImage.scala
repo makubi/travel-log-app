@@ -16,12 +16,15 @@ object UploadImageTable {
   val localImagePathColumn = ColumnDef("localImagePath", ColumnType.TEXT)
   val timeZoneColumn = ColumnDef("timeZone", ColumnType.TEXT)
 
+  val primaryKeyConstraint = ColumnConstraintDef(List(idColumn), ColumnConstraint.PRIMARY_KEY)
+
   val columns = idColumn :: nameColumn :: dateTimeColumn :: localImagePathColumn :: timeZoneColumn :: Nil
-  val tableDef = TableDef(tableName, columns)
+  val constraints = primaryKeyConstraint :: Nil
+  val tableDef = TableDef(tableName, columns, constraints)
 }
 class UploadImageTable(database: SQLiteDatabase) {
 
-  val table = new Table(database, UploadImageTable.tableName, UploadImageTable.columns)
+  val table = new Table(database, UploadImageTable.tableDef)
 
   def getAllRows = table.selectAll().map(UploadImageRow(_))
 
@@ -32,8 +35,10 @@ class UploadImageTable(database: SQLiteDatabase) {
     contentValues.put(UploadImageTable.localImagePathColumn.name, localImagePath)
     contentValues.put(UploadImageTable.timeZoneColumn.name, timeZone)
 
-    table.insert(database, contentValues)
+    table.insert(contentValues)
   }
+
+  def createTable() = table.createTable()
 }
 
 case class UploadImageRow(rowData: RowData) extends ColumnExtractor {

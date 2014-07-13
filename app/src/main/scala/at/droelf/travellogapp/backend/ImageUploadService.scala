@@ -59,12 +59,18 @@ class ImageUploadService {
   private def execInTransaction[E](database: SQLiteDatabase, f: => E): E = {
     database.beginTransaction()
 
-    val ret = f
+    try {
+      val ret = f
 
-    database.setTransactionSuccessful()
-    database.endTransaction()
-
-    ret
+      database.setTransactionSuccessful()
+      ret
+    }
+    catch {
+      case e: Exception => throw e
+    }
+    finally {
+      database.endTransaction()
+    }
   }
 
 }
