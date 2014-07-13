@@ -9,19 +9,17 @@ import android.util.Log
 import at.droelf.travellogapp.{UploadImage, ColumnType}
 import scala.collection.JavaConversions._
 
-case class ColumnDef(name: String, columnType: ColumnType)
+class Table(database: SQLiteDatabase, name: String, columnDefs: List[ColumnDef]) {
 
-case class TableDef(name: String, columns: List[ColumnDef]) {
-
-  def selectAll(database: SQLiteDatabase) = {
-    val map = new util.ArrayList[RowData]()
+  def selectAll() = {
+    val allRowData = new util.ArrayList[RowData]()
 
     val query: Cursor = DatabaseHelper.query(database, name)
 
-    val queryColumns = columns.map{ column => (column, query.getColumnIndex(column.name)) }
+    val columnsWithIndex = columnDefs.map{ columnDef => (columnDef, query.getColumnIndex(columnDef.name)) }
 
     while(query.moveToNext()) {
-      val columnData = queryColumns.map{ case (column, columnIndex) => {
+      val columnData = columnsWithIndex.map{ case (column, columnIndex) => {
         val data = column.columnType match {
           case ColumnType.TEXT => query.getString(columnIndex)
           case ColumnType.INTEGER => query.getLong(columnIndex)
@@ -31,18 +29,26 @@ case class TableDef(name: String, columns: List[ColumnDef]) {
         ColumnData(column, data)
       }}
 
-      map.add(RowData(1, columnData))
+      allRowData.add(RowData(columnData))
     }
 
     query.close()
 
-    map.toList
+    allRowData.toList
+  }
+
+  def insert(database: SQLiteDatabase, contentValues: ContentValues) {
+    DatabaseHelper.insert(database, name, contentValues)
   }
 }
 
+case class ColumnDef(name: String, columnType: ColumnType)
+
+case class TableDef(name: String, columnDefs: List[ColumnDef])
+
 case class ColumnData(columnDef: ColumnDef, data: Any)
 
-case class RowData(number: Int, columnData: List[ColumnData])
+case class RowData(columnData: List[ColumnData])
 
 trait ColumnExtractor {
   def getDataForColumn[T](column: ColumnDef)(implicit rowData: RowData): T = {

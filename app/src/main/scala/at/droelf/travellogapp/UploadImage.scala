@@ -1,5 +1,6 @@
 package at.droelf.travellogapp
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import at.droelf.travellogapp.backend.db._
 import org.joda.time.LocalDateTime
@@ -20,8 +21,18 @@ object UploadImageTable {
 }
 class UploadImageTable(database: SQLiteDatabase) {
 
-  def getUploadImageRows = {
-    UploadImageTable.tableDef.selectAll(database).map(UploadImageRow(_))
+  val table = new Table(database, UploadImageTable.tableName, UploadImageTable.columns)
+
+  def getAllRows = table.selectAll().map(UploadImageRow(_))
+
+  def insertRow(name: String, dateTime: String, localImagePath: String, timeZone: String) {
+    val contentValues = new ContentValues
+    contentValues.put(UploadImageTable.nameColumn.name, name)
+    contentValues.put(UploadImageTable.dateTimeColumn.name, dateTime)
+    contentValues.put(UploadImageTable.localImagePathColumn.name, localImagePath)
+    contentValues.put(UploadImageTable.timeZoneColumn.name, timeZone)
+
+    table.insert(database, contentValues)
   }
 }
 

@@ -26,16 +26,11 @@ class ImageUploadService {
   def queueImageUpload(name: String, imageTakenDateTime: LocalDateTime, timezone: String, localImagePath: String) {
     val database: SQLiteDatabase = databaseOpenHelper.getWritableDatabase
 
+    val table = new UploadImageTable(database)
+
     execInTransaction(database, {
 
-      val contentValues = new ContentValues
-      contentValues.put("name", name)
-      contentValues.put("dateTime", DateTimeUtils.localDateTimeToIsoString(imageTakenDateTime))
-      contentValues.put("localImagePath", localImagePath)
-      contentValues.put("timeZone", timezone)
-
-      DatabaseHelper.insert(database, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, contentValues)
-
+      table.insertRow(name, DateTimeUtils.localDateTimeToIsoString(imageTakenDateTime), localImagePath, timezone)
     })
   }
 
@@ -46,7 +41,7 @@ class ImageUploadService {
 
     execInTransaction[List[UploadImage]](database, {
 
-      table.getUploadImageRows.map( row => {
+      table.getAllRows.map( row => {
         UploadImage(row.id, DateTimeUtils.iosStringToLocalDateTime(row.dateTime), row.timeZone, row.name, row.localImagePath)
       })
     })
