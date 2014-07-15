@@ -50,6 +50,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    compile 'org.scala-lang:scala-library:2.11.1'
+
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'joda-time:joda-time:2.3'
 
@@ -73,8 +75,4 @@ buildscript {
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-    compile 'org.scala-lang:scala-library:2.11.1'
 }

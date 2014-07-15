@@ -25,8 +25,8 @@ class Table(database: SQLiteDatabase, tableDef: TableDef) {
     while(query.moveToNext()) {
       val columnData = columnsWithIndex.map{ case (column, columnIndex) => {
         val data = column.columnType match {
-          case ColumnType.TEXT => query.getString(columnIndex)
-          case ColumnType.INTEGER => query.getLong(columnIndex)
+          case ColumnType.Text => query.getString(columnIndex)
+          case ColumnType.Integer => query.getLong(columnIndex)
           case _ => throw new RuntimeException("Unknown ColumnType: " + column.columnType)
         }
 
@@ -47,13 +47,13 @@ class Table(database: SQLiteDatabase, tableDef: TableDef) {
 
   def createTable() {
     val columnDefString = columnDefs.map( columnDef => {
-      s"${columnDef.name} ${columnDef.columnType.getText}"
+      s"${columnDef.name} ${columnDef.columnType.text}"
     })
 
     val constraintDefString = columnConstraintDefs.map( columnConstraintDef => {
       columnConstraintDef.constraint match {
-        case ColumnConstraint.PRIMARY_KEY => {
-          s"${columnConstraintDef.constraint.getText} (${columnConstraintDef.columns.map(_.name).mkString(", ")})"
+        case ColumnConstraint.PrimaryKey => {
+          s"${columnConstraintDef.constraint.text} (${columnConstraintDef.columns.map(_.name).mkString(", ")})"
         }
         case _ => throw new RuntimeException("Unknown column constraint: " + columnConstraintDef.constraint)
       }

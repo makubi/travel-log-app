@@ -21,10 +21,8 @@ object ImageUploadService {
 
 class ImageUploadService {
 
-  private val databaseOpenHelper: DatabaseOpenHelper = DatabaseOpenHelper.getInstance
-
   def queueImageUpload(name: String, imageTakenDateTime: LocalDateTime, timezone: String, localImagePath: String) {
-    val database: SQLiteDatabase = databaseOpenHelper.getWritableDatabase
+    val database: SQLiteDatabase = DatabaseOpenHelper.getWritableDatabase
 
     val table = new UploadImageTable(database)
 
@@ -35,7 +33,7 @@ class ImageUploadService {
   }
 
   def getQueuedImages: List[UploadImage] = {
-    val database: SQLiteDatabase = databaseOpenHelper.getReadableDatabase
+    val database: SQLiteDatabase = DatabaseOpenHelper.getReadableDatabase
 
     val table = new UploadImageTable(database)
 
@@ -48,7 +46,7 @@ class ImageUploadService {
   }
 
   private[backend] def setImageUploaded(id: Long) {
-    val database: SQLiteDatabase = databaseOpenHelper.getWritableDatabase
+    val database: SQLiteDatabase = DatabaseOpenHelper.getWritableDatabase
 
     execInTransaction[Unit](database, {
       // TODO own table with timestamp

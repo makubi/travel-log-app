@@ -10,13 +10,13 @@ case class UploadImage(id: Long, dateTime: LocalDateTime, timezone: String, name
 object UploadImageTable {
   val tableName = DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE
 
-  val idColumn = ColumnDef("_id", ColumnType.INTEGER)
-  val nameColumn = ColumnDef("name", ColumnType.TEXT)
-  val dateTimeColumn = ColumnDef("dateTime", ColumnType.TEXT)
-  val localImagePathColumn = ColumnDef("localImagePath", ColumnType.TEXT)
-  val timeZoneColumn = ColumnDef("timeZone", ColumnType.TEXT)
+  val idColumn = ColumnDef("_id", ColumnType.Integer)
+  val nameColumn = ColumnDef("name", ColumnType.Text)
+  val dateTimeColumn = ColumnDef("dateTime", ColumnType.Text)
+  val localImagePathColumn = ColumnDef("localImagePath", ColumnType.Text)
+  val timeZoneColumn = ColumnDef("timeZone", ColumnType.Text)
 
-  val primaryKeyConstraint = ColumnConstraintDef(List(idColumn), ColumnConstraint.PRIMARY_KEY)
+  val primaryKeyConstraint = ColumnConstraintDef(List(idColumn), ColumnConstraint.PrimaryKey)
 
   val columns = idColumn :: nameColumn :: dateTimeColumn :: localImagePathColumn :: timeZoneColumn :: Nil
   val constraints = primaryKeyConstraint :: Nil
