@@ -9,7 +9,7 @@ import org.springframework.http.converter.{FormHttpMessageConverter, HttpMessage
 import org.springframework.util.{LinkedMultiValueMap, MultiValueMap}
 import org.springframework.web.client.RestTemplate
 
-class NetworkClient {
+class NetworkClient(serverBaseUrl: String) {
 
     val authHeader: HttpAuthentication = new HttpBasicAuthentication(username, password)
     val requestHeadersWithAuth = new HttpHeaders
@@ -47,9 +47,9 @@ class NetworkClient {
     return DateTimeUtils.localDateTimeToIsoString(dateTime)
   }
 
-  private final val apiImageUploadBase: String = "http://i8:9000/api/images/uploadImage"
+  private final val apiImageUploadBase: String = s"http://${serverBaseUrl}/api/images/uploadImage"
   private final val imageFileFormKey: String = "file"
-  private final val apiGpxDataUpload: String = "http://i8:9000/api/tracks/upload/"
+  private final val apiGpxDataUpload: String = s"http://${serverBaseUrl}/api/tracks/upload/"
   private final val username: String = "admin"
   private final val password: String = "1234"
 }

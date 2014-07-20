@@ -26,6 +26,20 @@ class NotificationService {
     mBuilder
   }
 
+  def showNotification(notificationId: Int, title: String, message: String) = {
+    val mBuilder: Notification.Builder = new Notification.Builder(context).setSmallIcon(android.R.drawable.stat_notify_error).setContentTitle(title).setContentText(message)
+
+    val resultIntent: Intent = new Intent(context, classOf[NotificationActivity])
+    val resultPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+    mBuilder.setContentIntent(resultPendingIntent)
+    val build: Notification = mBuilder.build
+
+    mNotificationManager.notify(notificationId, build)
+
+    mBuilder
+  }
+
   private final val context: Context = AppStatics.context
   private final val mNotificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE).asInstanceOf[NotificationManager]
 }

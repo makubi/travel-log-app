@@ -22,6 +22,7 @@ class MainActivity extends Activity with FindView {
     setContentView(R.layout.activity_main)
 
     findView[TextView](R.id.foobar).setText(imageUploadService.getQueuedImages.zipWithIndex.map( i => s"${i._2 + 1}. ${i._1.name} ${i._1.imagePath}").mkString(System.getProperty("line.separator")))
+    // TODO show settings screen only if not configured
   }
 
   override def onCreateOptionsMenu(menu: Menu): Boolean = {
@@ -32,6 +33,7 @@ class MainActivity extends Activity with FindView {
   override def onOptionsItemSelected(item: MenuItem): Boolean = {
     val id: Int = item.getItemId
     if (id == R.id.action_settings) {
+      startActivity(new Intent(this, classOf[SettingsActivity]))
       return true
     }
     return super.onOptionsItemSelected(item)
