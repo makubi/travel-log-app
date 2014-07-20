@@ -36,7 +36,7 @@ object DatabaseHelper {
 
   def createTable(database: SQLiteDatabase, tableName: String, columnString: String) {
     val escapedTable: String = getSQLEscapeString(tableName)
-    val createTableStatement: String = "CREATE TABLE " + escapedTable + "(" + columnString + ")"
+    val createTableStatement: String = "CREATE TABLE " + escapedTable + " (" + columnString + ")"
     Log.d("Database", "Executing SQL statement " + database.getPath + ", " + createTableStatement)
     database.execSQL(createTableStatement)
   }

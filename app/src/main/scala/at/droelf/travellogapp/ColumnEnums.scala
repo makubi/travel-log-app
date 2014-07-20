@@ -6,7 +6,7 @@ import android.util.Log;
 case class ColumnConstraint(text: String)
 
 object ColumnConstraint {
-  val PrimaryKey = ColumnConstraint("PRIMARY_KEY")
+  val PrimaryKey = ColumnConstraint("PRIMARY KEY")
 }
 
 
