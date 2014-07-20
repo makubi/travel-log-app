@@ -19,7 +19,7 @@ class ImageUploadAndroidService extends IntentService("ImageUploadAndroidService
   val networkClient: NetworkClient = new NetworkClient
   val notificationService = new NotificationService
 
-  protected def onHandleIntent(intent: Intent) {
+  override protected def onHandleIntent(intent: Intent) {
     val applicationName = getApplicationName(getApplicationContext)
 
     val queuedImages = imageUploadService.getQueuedImages
