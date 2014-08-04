@@ -2,8 +2,8 @@ package at.droelf.travellogapp.backend
 
 import _root_.android.database.sqlite.SQLiteDatabase
 import at.droelf.travellogapp.backend.db.{Transaction, TransactionReadOnly, DatabaseHelper, DatabaseOpenHelper}
-import at.droelf.travellogapp.{DateTimeUtils, UploadImage, UploadImageTable}
-import org.joda.time.LocalDateTime
+import at.droelf.travellogapp.{UploadedImageTable, DateTimeUtils, UploadImage, UploadImageTable}
+import org.joda.time.{DateTime, LocalDateTime}
 
 object ImageUploadService {
   def getInstance: ImageUploadService = {
@@ -24,15 +24,13 @@ class ImageUploadService {
 
     val table = new UploadImageTable(db)
 
-    table.getAllRows.map( row => {
-      UploadImage(row.id, DateTimeUtils.iosStringToLocalDateTime(row.dateTime), row.timeZone, row.name, row.localImagePath)
-    })
+    table.getAllRows.map(UploadImage(_))
 
   }
 
   private[backend] def setImageUploaded(id: Long): Unit = Transaction { db =>
-    // TODO own table with timestamp
-    DatabaseHelper.delete(db, DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE, "_id=?", Array[String](id.toString))
+    val table = new UploadedImageTable(db)
+    table.insertRow(id, DateTimeUtils.dateTimeToIsoString(DateTime.now()))
   }
 
 

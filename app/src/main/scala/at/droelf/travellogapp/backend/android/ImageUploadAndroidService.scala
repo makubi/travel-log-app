@@ -39,7 +39,10 @@ class ImageUploadAndroidService extends IntentService("ImageUploadAndroidService
             client.uploadImage(queuedImage.dateTime, queuedImage.timezone, queuedImage.name, queuedImage.imagePath)
           } match {
             case Success(httpStatus) => if(httpStatus == HttpStatus.OK) imageUploadService.setImageUploaded(queuedImage.id)
-            case Failure(e) => numErrors = numErrors + 1
+            case Failure(e) => {
+              numErrors = numErrors + 1
+              Log.e("fooBar",e.toString)
+            }
           }
         }}
 
@@ -48,10 +51,6 @@ class ImageUploadAndroidService extends IntentService("ImageUploadAndroidService
       }
       case None => notificationService.showNotification(NOTIFICATION_ID, applicationName, "Unable to process images. Check your configuration.")
     }
-
-
-
-
 
   }
 

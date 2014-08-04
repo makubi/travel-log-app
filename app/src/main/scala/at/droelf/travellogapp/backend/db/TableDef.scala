@@ -52,8 +52,8 @@ class Table(database: SQLiteDatabase, tableDef: TableDef) {
 
     val constraintDefString = columnConstraintDefs.map( columnConstraintDef => {
       columnConstraintDef.constraint match {
-        case ColumnConstraint.PrimaryKey => {
-          s"${columnConstraintDef.constraint.text} (${columnConstraintDef.columns.map(_.name).mkString(", ")})"
+        case ColumnConstraint.PrimaryKey | ColumnConstraint.Unique => {
+          s"${columnConstraintDef.constraint.before} (${columnConstraintDef.columns.map(_.name).mkString(", ")}) ${columnConstraintDef.constraint.after}"
         }
         case _ => throw new RuntimeException("Unknown column constraint: " + columnConstraintDef.constraint)
       }

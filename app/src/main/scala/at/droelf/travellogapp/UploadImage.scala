@@ -7,6 +7,11 @@ import org.joda.time.LocalDateTime
 
 case class UploadImage(id: Long, dateTime: LocalDateTime, timezone: String, name: String, imagePath: String)
 
+object UploadImage{
+  def apply(row: UploadImageRow): UploadImage = UploadImage(row.id, DateTimeUtils.iosStringToLocalDateTime(row.dateTime), row.timeZone, row.name, row.localImagePath)
+}
+
+
 object UploadImageTable {
   val tableName = DatabaseOpenHelper.QUEUED_IMAGE_UPLOADS_TABLE
 
@@ -17,9 +22,10 @@ object UploadImageTable {
   val timeZoneColumn = ColumnDef("timeZone", ColumnType.Text)
 
   val primaryKeyConstraint = ColumnConstraintDef(List(idColumn), ColumnConstraint.PrimaryKey)
+  val localImagePathConstraint = ColumnConstraintDef(List(localImagePathColumn), ColumnConstraint.Unique)
 
   val columns = idColumn :: nameColumn :: dateTimeColumn :: localImagePathColumn :: timeZoneColumn :: Nil
-  val constraints = primaryKeyConstraint :: Nil
+  val constraints = primaryKeyConstraint :: localImagePathConstraint :: Nil
   val tableDef = TableDef(tableName, columns, constraints)
 }
 class UploadImageTable(database: SQLiteDatabase) {

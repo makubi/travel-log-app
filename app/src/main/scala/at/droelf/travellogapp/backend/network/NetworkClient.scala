@@ -11,16 +11,22 @@ import org.springframework.web.client.RestTemplate
 
 class NetworkClient(serverBaseUrl: String) {
 
-    val authHeader: HttpAuthentication = new HttpBasicAuthentication(username, password)
-    val requestHeadersWithAuth = new HttpHeaders
-    requestHeadersWithAuth.setAuthorization(authHeader)
+  private final val apiImageUploadBase: String = s"http://${serverBaseUrl}/api/images/uploadImage"
+  private final val imageFileFormKey: String = "file"
+  private final val apiGpxDataUpload: String = s"http://${serverBaseUrl}/api/tracks/upload/"
+  private final val username: String = "admin"
+  private final val password: String = "1234"
 
-    val restTemplate = new RestTemplate
+  val authHeader: HttpAuthentication = new HttpBasicAuthentication(username, password)
+  val requestHeadersWithAuth = new HttpHeaders
+  requestHeadersWithAuth.setAuthorization(authHeader)
 
-    val messageConverters: java.util.List[HttpMessageConverter[_]] = restTemplate.getMessageConverters
-    messageConverters.add(new ResourceHttpMessageConverter)
-    messageConverters.add(new StringHttpMessageConverter)
-    messageConverters.add(new FormHttpMessageConverter)
+  val restTemplate = new RestTemplate
+
+  val messageConverters: java.util.List[HttpMessageConverter[_]] = restTemplate.getMessageConverters
+  messageConverters.add(new ResourceHttpMessageConverter)
+  messageConverters.add(new StringHttpMessageConverter)
+  messageConverters.add(new FormHttpMessageConverter)
 
   private[travellogapp] def uploadImage(dateTime: LocalDateTime, timezone: String, name: String, imagePath: String) = {
     val url: String = apiImageUploadBase + "/" + getLocalDateTimeAsStringForImageUpload(dateTime) + timezone + "/" + name
@@ -47,9 +53,5 @@ class NetworkClient(serverBaseUrl: String) {
     return DateTimeUtils.localDateTimeToIsoString(dateTime)
   }
 
-  private final val apiImageUploadBase: String = s"http://${serverBaseUrl}/api/images/uploadImage"
-  private final val imageFileFormKey: String = "file"
-  private final val apiGpxDataUpload: String = s"http://${serverBaseUrl}/api/tracks/upload/"
-  private final val username: String = "admin"
-  private final val password: String = "1234"
+
 }
