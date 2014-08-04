@@ -5,4 +5,8 @@
         android:key="@string/setting_key_server_base_url"
         android:title="Server base url"
         />
+    <EditTextPreference
+        android:key="@string/setting_key_image_base_path"
+        android:title="Image base file path"
+        />
 </PreferenceScreen>

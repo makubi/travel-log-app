@@ -4,7 +4,7 @@ import android.app.{PendingIntent, Notification, IntentService}
 import android.content.{Context, Intent}
 import android.util.Log
 import at.droelf.travellogapp.AppStatics
-import at.droelf.travellogapp.backend.{Settings, ImageUploadService}
+import at.droelf.travellogapp.backend.{UploadedImageService, Settings, ImageUploadService}
 import at.droelf.travellogapp.backend.network.NetworkClient
 import at.droelf.travellogapp.ui.NotificationActivity
 import org.springframework.http.HttpStatus
@@ -27,7 +27,10 @@ class ImageUploadAndroidService extends IntentService("ImageUploadAndroidService
     networkClient match {
       case Some(client) => {
 
-        val queuedImages = imageUploadService.getQueuedImages
+        val uploadedImages = UploadedImageService.getUploadedImages
+
+        val queuedImages = imageUploadService.getQueuedImages.filter(img => uploadedImages.filter(_.uploadedImage.id == img.id).size == 0)
+
         val numOfQueuedImages = queuedImages.size
 
         var numErrors = 0

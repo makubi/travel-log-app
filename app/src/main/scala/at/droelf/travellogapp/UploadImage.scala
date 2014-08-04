@@ -8,7 +8,7 @@ import org.joda.time.LocalDateTime
 case class UploadImage(id: Long, dateTime: LocalDateTime, timezone: String, name: String, imagePath: String)
 
 object UploadImage{
-  def apply(row: UploadImageRow): UploadImage = UploadImage(row.id, DateTimeUtils.iosStringToLocalDateTime(row.dateTime), row.timeZone, row.name, row.localImagePath)
+  def apply(row: UploadImageRow): UploadImage = UploadImage(row.id, DateTimeUtils.isoStringToLocalDateTime(row.dateTime), row.timeZone, row.name, row.localImagePath)
 }
 
 

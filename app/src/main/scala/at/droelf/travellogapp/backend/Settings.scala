@@ -8,6 +8,6 @@ object Settings {
   val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
   def serverBaseUrl = Option(sharedPreferences.getString(context.getString(R.string.setting_key_server_base_url), null))
-
+  def imageBaseDirectory = Option(sharedPreferences.getString(context.getString(R.string.setting_key_image_base_path), null))
 
 }

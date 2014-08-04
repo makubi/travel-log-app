@@ -40,11 +40,12 @@ class UploadedImageTable(database: SQLiteDatabase) {
   def getAllUploadedImages = {
     val uploadImageTable = new UploadImageTable(database)
     val uploadImages = uploadImageTable.getAllRows
+
     getAllRows.map(row =>
       UploadedImage(
         row.id,
         UploadImage(uploadImages.find(image => row.imageId == image.id).get),
-        DateTimeUtils.iosStringToDateTime(row.uploadTimeStamp)
+        DateTimeUtils.isoStringToDateTime(row.uploadTimeStamp)
       )
     )
   }

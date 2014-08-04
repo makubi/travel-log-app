@@ -4,26 +4,35 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.{Menu, MenuItem}
-import android.widget.TextView
+import android.view.{Menu, MenuItem, View}
+import android.widget.{AdapterView, GridView}
 import at.droelf.travellogapp._
-import at.droelf.travellogapp.backend.{UploadedImageService, ImageUploadService}
+import at.droelf.travellogapp.backend.ImageUploadService
 import at.droelf.travellogapp.backend.android.ImageUploadAndroidService
 import org.joda.time.LocalDateTime
 
 class MainActivity extends Activity with FindView {
 
   private val imageUploadService: ImageUploadService = ImageUploadService.getInstance
-
+  private lazy val imageGridAdapter: ImageGridAdapter = new ImageGridAdapter(this, getLayoutInflater)
 
   override protected def onCreate(savedInstanceState: Bundle) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    findView[TextView](R.id.foobar).setText(imageUploadService.getQueuedImages.zipWithIndex.map( i => s"${i._2 + 1}. ${i._1.name} ${i._1.imagePath}").mkString(System.getProperty("line.separator")))
+    val gridView = findView[GridView](R.id.images)
+    gridView.setAdapter(imageGridAdapter)
 
-    findView[TextView](R.id.uploadedImages).setText(UploadedImageService.getUploadedImages.mkString("\n"))
-    // TODO show settings screen only if not configured
+    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
+        val adapter = parent.getAdapter.asInstanceOf[ImageGridAdapter]
+        val image = adapter.getItem(position)
+        imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, "+02:00", image.imageFile.path)
+        adapter.update()
+      }
+    })
+
+
   }
 
   override def onCreateOptionsMenu(menu: Menu): Boolean = {
@@ -33,10 +42,18 @@ class MainActivity extends Activity with FindView {
 
   override def onOptionsItemSelected(item: MenuItem): Boolean = {
     val id: Int = item.getItemId
-    if (id == R.id.action_settings) {
-      startActivity(new Intent(this, classOf[SettingsActivity]))
-      return true
+    id match {
+      case R.id.action_settings => {
+        startActivity(new Intent(this, classOf[SettingsActivity]))
+        return true
+      }
+      case R.id.refresh => {
+        findView[GridView](R.id.images).getAdapter.asInstanceOf[ImageGridAdapter].update()
+        return true
+        
+      }
     }
+
     return super.onOptionsItemSelected(item)
   }
 
@@ -44,18 +61,6 @@ class MainActivity extends Activity with FindView {
     super.onStart
     //imageUploadService.queueImageUpload("fooBarBlub", new LocalDateTime, "+02:00", "/storage/emulated/legacy/Pictures/Screenshots/Screenshot_2014-07-27-20-26-55.png")
     Log.d("foobar", DateTimeUtils.localDateTimeToIsoString(new LocalDateTime))
-    new Thread(new Runnable {
-      def run {
-        try {
-          Thread.sleep(1000)
-          startService(new Intent(AppStatics.context, classOf[ImageUploadAndroidService]))
-        }
-        catch {
-          case e: InterruptedException => {
-            e.printStackTrace
-          }
-        }
-      }
-    }).start
+    startService(new Intent(AppStatics.context, classOf[ImageUploadAndroidService]))
   }
 }
