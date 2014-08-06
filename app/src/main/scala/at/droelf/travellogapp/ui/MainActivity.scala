@@ -9,6 +9,7 @@ import android.widget.{AdapterView, GridView}
 import at.droelf.travellogapp._
 import at.droelf.travellogapp.backend.ImageUploadService
 import at.droelf.travellogapp.backend.android.ImageUploadAndroidService
+import com.tonicartos.widget.stickygridheaders.StickyGridHeadersGridView
 import org.joda.time.LocalDateTime
 
 class MainActivity extends Activity with FindView {
@@ -20,15 +21,14 @@ class MainActivity extends Activity with FindView {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    val gridView = findView[GridView](R.id.images)
+    val gridView = findView[StickyGridHeadersGridView](R.id.images)
     gridView.setAdapter(imageGridAdapter)
 
     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
-        val adapter = parent.getAdapter.asInstanceOf[ImageGridAdapter]
-        val image = adapter.getItem(position)
+        val image = imageGridAdapter.getItem(position)
         imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, "+02:00", image.imageFile.path)
-        adapter.update()
+        imageGridAdapter.update()
       }
     })
 
@@ -48,9 +48,9 @@ class MainActivity extends Activity with FindView {
         return true
       }
       case R.id.refresh => {
-        findView[GridView](R.id.images).getAdapter.asInstanceOf[ImageGridAdapter].update()
+        imageGridAdapter.update()
         return true
-        
+
       }
     }
 

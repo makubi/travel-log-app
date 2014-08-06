@@ -11,16 +11,38 @@
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/image_text_1" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/image_text_2" />
+
+        <IconTextView
+            android:id="@+id/img_info"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="{fa-info-circle}"
+            android:shadowColor="#22000000"
+            android:shadowDx="3"
+            android:shadowDy="3"
+            android:shadowRadius="1"
+            android:textSize="36dp"
+            android:layout_alignParentLeft="true"
+        />
+
+        <IconTextView
+            android:id="@+id/img_status"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text=""
+            android:shadowColor="#22000000"
+            android:shadowRadius="1"
+            android:textSize="36dp"
+            android:textColor="#FF33B5E5"
+            android:layout_alignParentRight="true"
+        />
+
+
+    </RelativeLayout>
+
 
 </LinearLayout>
