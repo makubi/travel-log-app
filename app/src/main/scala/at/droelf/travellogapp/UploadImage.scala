@@ -44,6 +44,10 @@ class UploadImageTable(database: SQLiteDatabase) {
     table.insert(contentValues)
   }
 
+  def deleteRow(id: Long) = {
+    table.delete("_id=?",Array(id.toString))
+  }
+
   def createTable() = table.createTable()
 }
 

@@ -37,6 +37,10 @@ class UploadedImageTable(database: SQLiteDatabase) {
 
   def createTable() = table.createTable()
 
+  def deleteRow(id: Long) = {
+    table.delete("_id=?",Array{id.toString})
+  }
+
   def getAllUploadedImages = {
     val uploadImageTable = new UploadImageTable(database)
     val uploadImages = uploadImageTable.getAllRows

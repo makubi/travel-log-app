@@ -11,4 +11,9 @@ object UploadedImageService {
     table.getAllUploadedImages
   }
 
+  def resetUploadedImage(id: Long) = Transaction{ db =>
+    val table = new UploadedImageTable(db)
+    table.deleteRow(id)
+  }
+
 }

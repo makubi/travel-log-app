@@ -38,7 +38,7 @@ class ImageGridAdapter(context: Context, layoutInflater: LayoutInflater) extends
       .centerCrop()
       .into(findView[ImageView](R.id.imageView, view))
 
-    findView[TextView](R.id.img_info, view)
+    findView[TextView](R.id.img_info, view).setText(s"Name: ${guiImage.imageFile.name}\nPath: ${guiImage.imageFile.path}}")
 
     (guiImage.queuedImage, guiImage.uploadedImage) match{
       case (Some(q),Some(u)) => findView[TextView](R.id.img_status, view).setText("{fa-check}")

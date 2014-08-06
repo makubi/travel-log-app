@@ -45,6 +45,10 @@ class Table(database: SQLiteDatabase, tableDef: TableDef) {
     DatabaseHelper.insert(database, name, contentValues)
   }
 
+  def delete(whereClause: String, whereArgs: Array[String]){
+    DatabaseHelper.delete(database, name, whereClause, whereArgs)
+  }
+
   def createTable() {
     val columnDefString = columnDefs.map( columnDef => {
       s"${columnDef.name} ${columnDef.columnType.text}"

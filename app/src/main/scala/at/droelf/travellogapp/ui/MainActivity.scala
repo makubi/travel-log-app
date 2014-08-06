@@ -27,7 +27,11 @@ class MainActivity extends Activity with FindView {
     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
       def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
         val image = imageGridAdapter.getItem(position)
-        imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, "+02:00", image.imageFile.path)
+
+        //imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, "+02:00", image.imageFile.path)
+
+        GuiImageService.resetImage(image)
+
         imageGridAdapter.update()
       }
     })
@@ -61,6 +65,5 @@ class MainActivity extends Activity with FindView {
     super.onStart
     //imageUploadService.queueImageUpload("fooBarBlub", new LocalDateTime, "+02:00", "/storage/emulated/legacy/Pictures/Screenshots/Screenshot_2014-07-27-20-26-55.png")
     Log.d("foobar", DateTimeUtils.localDateTimeToIsoString(new LocalDateTime))
-    startService(new Intent(AppStatics.context, classOf[ImageUploadAndroidService]))
   }
 }

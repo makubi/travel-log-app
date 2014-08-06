@@ -25,13 +25,21 @@ class ImageUploadService {
     val table = new UploadImageTable(db)
 
     table.getAllRows.map(UploadImage(_))
-
   }
+
+  def resetImage(id: Long): Unit = Transaction{ db =>
+    val table = new UploadImageTable(db)
+    table.deleteRow(id)
+  }
+
+
 
   private[backend] def setImageUploaded(id: Long): Unit = Transaction { db =>
     val table = new UploadedImageTable(db)
     table.insertRow(id, DateTimeUtils.dateTimeToIsoString(DateTime.now()))
   }
+
+
 
 
 }
