@@ -14,7 +14,7 @@ import org.joda.time.LocalDateTime
 
 class MainActivity extends Activity with FindView {
 
-  private val imageUploadService: ImageUploadService = ImageUploadService.getInstance
+//  private val imageUploadService: ImageUploadService = ImageUploadService.getInstance
   private lazy val imageGridAdapter: ImageGridAdapter = new ImageGridAdapter(this, getLayoutInflater)
 
   override protected def onCreate(savedInstanceState: Bundle) {
@@ -30,7 +30,9 @@ class MainActivity extends Activity with FindView {
 
         //imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, "+02:00", image.imageFile.path)
 
-        GuiImageService.resetImage(image)
+        GuiImageService.queueImagesForUpload(List(image))
+
+        //GuiImageService.resetImage(image)
 
         imageGridAdapter.update()
       }

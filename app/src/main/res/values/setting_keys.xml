@@ -2,4 +2,5 @@
 <resources>
     <string name="setting_key_server_base_url">setting_key_server_base_url</string>
     <string name="setting_key_image_base_path">setting_key_image_base_path</string>
+    <string name="setting_key_timezone">setting_key_timezone</string>
 </resources>

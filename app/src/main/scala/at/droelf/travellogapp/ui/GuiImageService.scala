@@ -2,8 +2,10 @@ package at.droelf.travellogapp.ui
 
 import java.io.File
 
+import android.content.Intent
 import android.media.ExifInterface
-import at.droelf.travellogapp.{DateTimeUtils, UploadedImage, UploadImage}
+import at.droelf.travellogapp.backend.android.ImageUploadAndroidService
+import at.droelf.travellogapp.{AppStatics, DateTimeUtils, UploadedImage, UploadImage}
 import at.droelf.travellogapp.backend.{Settings, UploadedImageService, ImageUploadService}
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.{SuffixFileFilter, TrueFileFilter}
@@ -26,13 +28,16 @@ object GuiImageService{
       val queudImage = queudImages.filter(_.imagePath == imageFile.path).headOption
       val uploadedImage = queudImage.map(img => uploadedImages.filter(_.id == img.id).headOption).flatten
       GuiImage(imageFile, queudImage, uploadedImage)
-    })
+    }).sortWith((d1,d2) => d1.imageFile.dateTime.isBefore(d1.imageFile.dateTime))
   }
 
   def queueImagesForUpload(images: Seq[GuiImage]){
+    val timeZone = Settings.timeZone.getOrElse("+0000")
     images.foreach( image =>
-      imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, "+02:00", image.imageFile.path)
+      imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, timeZone, image.imageFile.path)
     )
+    AppStatics.context.startService(new Intent(AppStatics.context, classOf[ImageUploadAndroidService]))
+
   }
 
   def resetImage(image: GuiImage){
@@ -59,8 +64,6 @@ object GuiImageService{
       ImageFile(file.getAbsolutePath, file.getName, DateTimeUtils.parseExifDateToLocalDateTime(new ExifInterface(file.getAbsolutePath).getAttribute(ExifInterface.TAG_DATETIME)))
     ).toList
   }
-
-
 
 }
 

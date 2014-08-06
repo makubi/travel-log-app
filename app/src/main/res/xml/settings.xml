@@ -9,4 +9,9 @@
         android:key="@string/setting_key_image_base_path"
         android:title="Image base file path"
         />
+
+    <EditTextPreference
+        android:key="@string/setting_key_timezone"
+        android:title="Timezone (eg. +0200)"
+        />
 </PreferenceScreen>
