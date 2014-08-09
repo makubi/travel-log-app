@@ -11,9 +11,7 @@ import org.joda.time.LocalDateTime
 
 class MainActivity extends Activity with FindView {
 
-  //  private val imageUploadService: ImageUploadService = ImageUploadService.getInstance
-  private lazy val imageGridAdapter: ImageGridAdapter = new ImageGridAdapter(this, getLayoutInflater)
-
+  lazy val imageGridAdapter: ImageGridAdapter = new ImageGridAdapter(this, getLayoutInflater)
 
   override protected def onCreate(savedInstanceState: Bundle) {
     super.onCreate(savedInstanceState)
@@ -68,9 +66,6 @@ class MainActivity extends Activity with FindView {
       }
 
       override def onPrepareActionMode(p1: ActionMode, p2: Menu): Boolean = true
-
-
-
     })
 
 
@@ -78,15 +73,9 @@ class MainActivity extends Activity with FindView {
       def onItemClick(parent: AdapterView[_], view: View, position: Int, id: Long) {
         val image = imageGridAdapter.getItem(position).guiImage
 
-        //imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, "+02:00", image.imageFile.path)
-        //GuiImageService.queueImagesForUpload(List(image))
-        GuiImageService.resetImage(image)
-
-        imageGridAdapter.update()
+        ImageDialog.newInstance(position).show(getFragmentManager, "imageDialog")
       }
     })
-
-
   }
 
   override def onCreateOptionsMenu(menu: Menu): Boolean = {
@@ -104,7 +93,6 @@ class MainActivity extends Activity with FindView {
       case R.id.refresh => {
         imageGridAdapter.update()
         return true
-
       }
     }
 
