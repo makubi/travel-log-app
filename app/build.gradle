@@ -62,7 +62,6 @@ dependencies {
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.1'
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.picasso:picasso:2.3.3'
-    compile 'com.tonicartos:stickygridheaders:1.0.1'
     compile 'com.joanzapata.android:android-iconify:1.0.6'
 
 }

@@ -30,6 +30,18 @@
             android:textColor="#FF33B5E5"
             android:textSize="20dp" />
 
+        <IconTextView
+            android:id="@+id/img_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:shadowColor="#22000000"
+            android:shadowRadius="1"
+            android:text=""
+            android:textColor="#FFFF0000"
+            android:textSize="20dp" />
+
 
     </RelativeLayout>
 

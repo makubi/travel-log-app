@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.{SuffixFileFilter, TrueFileFilter}
 import org.joda.time.{LocalDateTime}
 import scala.collection.JavaConversions._
+import scala.util.Try
 
 
 object GuiImageService{
@@ -19,7 +20,7 @@ object GuiImageService{
   val imageUploadedService = UploadedImageService
 
 
-  def getImages(path: Option[String]): List[GuiImage] = {
+  def getImages: List[GuiImage] = {
     val imagesFromFileSystem = loadImagesFromFileSystem
     val queudImages = imageUploadService.getQueuedImages
     val uploadedImages = imageUploadedService.getUploadedImages
@@ -28,10 +29,10 @@ object GuiImageService{
       val queudImage = queudImages.filter(_.imagePath == imageFile.path).headOption
       val uploadedImage = queudImage.map(img => uploadedImages.filter(_.id == img.id).headOption).flatten
       GuiImage(imageFile, queudImage, uploadedImage)
-    }).sortWith((d1,d2) => d1.imageFile.dateTime.isBefore(d1.imageFile.dateTime))
+    }).sortWith((d1,d2) => d1.imageFile.dateTime.isAfter(d1.imageFile.dateTime))
   }
 
-  def queueImagesForUpload(images: Seq[GuiImage]){
+  def queueImagesForUpload(images: List[GuiImage]){
     val timeZone = Settings.timeZone.getOrElse("+0000")
     images.foreach( image =>
       imageUploadService.queueImageUpload(image.imageFile.name, image.imageFile.dateTime, timeZone, image.imageFile.path)
@@ -60,9 +61,11 @@ object GuiImageService{
       new SuffixFileFilter(Array("jpg", "JPG")),
       TrueFileFilter.INSTANCE
     )
-    files.map(file =>
-      ImageFile(file.getAbsolutePath, file.getName, DateTimeUtils.parseExifDateToLocalDateTime(new ExifInterface(file.getAbsolutePath).getAttribute(ExifInterface.TAG_DATETIME)))
-    ).toList
+    files.map(file =>{
+      val dateTimeRaw = new ExifInterface(file.getAbsolutePath).getAttribute(ExifInterface.TAG_DATETIME)
+      val dateTime = Try(DateTimeUtils.parseExifDateToLocalDateTime(dateTimeRaw)).getOrElse(LocalDateTime.now())
+      ImageFile(file.getAbsolutePath, file.getName, dateTime)
+    }).toList
   }
 
 }
