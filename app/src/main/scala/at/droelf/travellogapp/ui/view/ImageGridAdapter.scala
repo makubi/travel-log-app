@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso
 class ImageGridAdapter(context: Context, layoutInflater: LayoutInflater) extends BaseAdapter {
 
   //TODO fix this -.-
-  var images: Seq[ImageItem] = GuiImageService.getImages.map(img => ImageItem(guiImage = img))
+  var images: List[ImageItem] = GuiImageService.getInitialList.map(img => ImageItem(guiImage = img))
 
   override def getCount: Int = images.length
 
@@ -40,7 +40,7 @@ class ImageGridAdapter(context: Context, layoutInflater: LayoutInflater) extends
       .into(findView[ImageView](R.id.imageView, view))
 
     findView[TextView](R.id.img_info, view).setText(
-      s"Name: ${guiImage.imageFile.name}\n" +
+      s"Name: ${guiImage.queuedImage.map(_.name).getOrElse(guiImage.imageFile.name)}\n" +
       s"Path: ${guiImage.imageFile.path}\n" +
       s"Date: ${guiImage.imageFile.dateTime.toLocalDate}\n${guiImage.imageFile.dateTime.toLocalTime}"
     )
@@ -79,9 +79,6 @@ class ImageGridAdapter(context: Context, layoutInflater: LayoutInflater) extends
     }
   }
 
-
-
-
   private def inflateViewIfNull[T <: View](convertView: View, f: () => T): T = {
     convertView match {
       case null => f()
@@ -100,16 +97,27 @@ class ImageGridAdapter(context: Context, layoutInflater: LayoutInflater) extends
     notifyDataSetChanged()
   }
 
+  def setItemName(pos: Int, name: String) {
+    val image = getItem(pos)
+    val imageFile = image.guiImage.imageFile
+    images = images.updated(pos, ImageItem(GuiImage(ImageFile(imageFile.path, name,imageFile.dateTime),None,None), image.id, image.checked))
+    notifyDataSetChanged()
+  }
+
   def clearSelection() = {
     images = images.map(img => ImageItem(img.guiImage,img.id,false))
     notifyDataSetChanged()
   }
 
   def update() = {
-    images = GuiImageService.getImages.map(ImageItem(_))
+    images = GuiImageService.softUpdate(images.map(_.guiImage)).map(ImageItem(_))
     notifyDataSetChanged()
   }
 
+  def hardReload() = {
+    images = GuiImageService.getInitialList.map(ImageItem(_))
+    notifyDataSetChanged()
+  }
 
   case class ImageItem(guiImage: GuiImage, id: Long = 0L, checked: Boolean = false)
 

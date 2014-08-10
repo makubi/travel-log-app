@@ -90,6 +90,10 @@ class MainActivity extends Activity with FindView {
         startActivity(new Intent(this, classOf[SettingsActivity]))
         return true
       }
+      case R.id.refresh_disk => {
+        imageGridAdapter.hardReload()
+        return true
+      }
       case R.id.refresh => {
         imageGridAdapter.update()
         return true

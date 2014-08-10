@@ -21,8 +21,7 @@ object GuiImageService{
   val defaultName = ""
 
 
-  def getImages: List[GuiImage] = {
-    val imagesFromFileSystem = loadImagesFromFileSystem
+  def getImages(imagesFromFileSystem: List[ImageFile]): List[GuiImage] = {
     val queudImages = imageUploadService.getQueuedImages
     val uploadedImages = imageUploadedService.getUploadedImages
 
@@ -30,8 +29,18 @@ object GuiImageService{
       val queudImage = queudImages.filter(_.imagePath == imageFile.path).headOption
       val uploadedImage = queudImage.map(img => uploadedImages.filter(_.id == img.id).headOption).flatten
       GuiImage(imageFile, queudImage, uploadedImage)
-    }).sortWith((d1,d2) => d1.imageFile.dateTime.isAfter(d1.imageFile.dateTime))
+    }).sortWith((d1,d2) => d1.imageFile.dateTime.isAfter(d2.imageFile.dateTime))
   }
+
+  def getInitialList: List[GuiImage] = {
+    getImages(loadImagesFromFileSystem)
+  }
+
+  def softUpdate(images: List[GuiImage]): List[GuiImage] = {
+    getImages(images.map(_.imageFile))
+  }
+
+
 
   def queueImagesForUpload(images: List[GuiImage]){
     val timeZone = Settings.timeZone.getOrElse("+0000")
