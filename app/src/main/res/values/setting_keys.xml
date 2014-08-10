@@ -3,4 +3,7 @@
     <string name="setting_key_server_base_url">setting_key_server_base_url</string>
     <string name="setting_key_image_base_path">setting_key_image_base_path</string>
     <string name="setting_key_timezone">setting_key_timezone</string>
+
+    <string name="setting_key_user">setting_key_user</string>
+    <string name="setting_key_password">setting_key_password</string>
 </resources>

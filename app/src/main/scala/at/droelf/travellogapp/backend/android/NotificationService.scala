@@ -1,10 +1,9 @@
 package at.droelf.travellogapp.backend.android
 
-import android.app.Notification.Builder
-import android.app.{Activity, NotificationManager, Notification, PendingIntent}
+import android.app.{Notification, NotificationManager, PendingIntent}
 import android.content.{Context, Intent}
 import at.droelf.travellogapp.AppStatics
-import at.droelf.travellogapp.ui.NotificationActivity
+import at.droelf.travellogapp.ui.MainActivity
 
 class NotificationService {
 
@@ -19,7 +18,7 @@ class NotificationService {
       .setContentText(message)
       .setProgress(maxProgress, currentProgress, false)
 
-    val resultIntent: Intent = new Intent(context, classOf[NotificationActivity])
+    val resultIntent: Intent = new Intent(context, classOf[MainActivity])
     val resultPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     mBuilder.setContentIntent(resultPendingIntent)
@@ -33,7 +32,7 @@ class NotificationService {
   def showNotification(notificationId: Int, title: String, message: String) = {
     val mBuilder: Notification.Builder = new Notification.Builder(context).setSmallIcon(android.R.drawable.stat_notify_error).setContentTitle(title).setContentText(message)
 
-    val resultIntent: Intent = new Intent(context, classOf[NotificationActivity])
+    val resultIntent: Intent = new Intent(context, classOf[MainActivity])
     val resultPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     mBuilder.setContentIntent(resultPendingIntent)

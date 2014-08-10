@@ -2,6 +2,7 @@ package at.droelf.travellogapp.backend.network
 
 import android.util.Log
 import at.droelf.travellogapp.DateTimeUtils
+import at.droelf.travellogapp.backend.Settings
 import org.joda.time.LocalDateTime
 import org.springframework.core.io.FileSystemResource
 import org.springframework.http._
@@ -20,8 +21,8 @@ class NetworkClient(serverBaseUrl: String) {
   private final val trackTimeZoneFormKey: String = "timeZone"
   private final val trackActivityFormKey: String = "activity"
 
-  private final val username: String = "admin"
-  private final val password: String = "1234"
+  private final val username: String = Settings.user.getOrElse("admin")
+  private final val password: String = Settings.password.getOrElse("1234")
 
   val authHeader: HttpAuthentication = new HttpBasicAuthentication(username, password)
   val requestHeadersWithAuth = new HttpHeaders

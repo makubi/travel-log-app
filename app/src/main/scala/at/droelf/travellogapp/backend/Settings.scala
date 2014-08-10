@@ -11,4 +11,7 @@ object Settings {
   def imageBaseDirectory = Option(sharedPreferences.getString(context.getString(R.string.setting_key_image_base_path), null))
   def timeZone = Option(sharedPreferences.getString(context.getString(R.string.setting_key_timezone), null))
 
+  def user = Option(sharedPreferences.getString(context.getString(R.string.setting_key_user), null))
+  def password = Option(sharedPreferences.getString(context.getString(R.string.setting_key_password), null))
+
 }

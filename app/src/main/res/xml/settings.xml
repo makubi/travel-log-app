@@ -14,4 +14,16 @@
         android:key="@string/setting_key_timezone"
         android:title="Timezone (eg. +0200)"
         />
+
+    <EditTextPreference
+        android:key="@string/setting_key_user"
+        android:title="User"
+        />
+
+    <EditTextPreference
+        android:key="@string/setting_key_password"
+        android:title="Password"
+        android:inputType="textPassword"
+        />
+
 </PreferenceScreen>

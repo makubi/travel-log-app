@@ -1,12 +1,10 @@
 package at.droelf.travellogapp.backend.android
 
-import android.app.{PendingIntent, Notification, IntentService}
+import android.app.IntentService
 import android.content.{Context, Intent}
 import android.util.Log
-import at.droelf.travellogapp.AppStatics
-import at.droelf.travellogapp.backend.{UploadedImageService, Settings, ImageUploadService}
 import at.droelf.travellogapp.backend.network.NetworkClient
-import at.droelf.travellogapp.ui.NotificationActivity
+import at.droelf.travellogapp.backend.{ImageUploadService, Settings, UploadedImageService}
 import org.springframework.http.HttpStatus
 
 import scala.util.{Failure, Success, Try}
@@ -17,7 +15,7 @@ class ImageUploadAndroidService extends IntentService("ImageUploadAndroidService
 
   val imageUploadService: ImageUploadService = ImageUploadService.getInstance
 
-  val networkClient: Option[NetworkClient] = Settings.serverBaseUrl.map({ url => new NetworkClient(url) })
+  val networkClient: Option[NetworkClient] = Settings.serverBaseUrl.map({ url => new NetworkClient(url)})
 
   val notificationService = new NotificationService
 
@@ -34,20 +32,21 @@ class ImageUploadAndroidService extends IntentService("ImageUploadAndroidService
         val numOfQueuedImages = queuedImages.size
 
         var numErrors = 0
-        queuedImages.zipWithIndex.map{ case (queuedImage, index) => {
+        queuedImages.zipWithIndex.map { case (queuedImage, index) => {
 
           notificationService.showNotification(NOTIFICATION_ID, applicationName, s"Processing #${index + 1} of ${numOfQueuedImages} (${numErrors} errors)", index, numOfQueuedImages)
 
           Try[HttpStatus] {
             client.uploadImage(queuedImage.dateTime, queuedImage.timezone, queuedImage.name, queuedImage.imagePath)
           } match {
-            case Success(httpStatus) => if(httpStatus == HttpStatus.OK) imageUploadService.setImageUploaded(queuedImage.id)
+            case Success(httpStatus) => if (httpStatus == HttpStatus.OK) imageUploadService.setImageUploaded(queuedImage.id)
             case Failure(e) => {
               numErrors = numErrors + 1
-              Log.e("fooBar",e.toString)
+              Log.e("fooBar", e.toString)
             }
           }
-        }}
+        }
+        }
 
         notificationService.hideNotification(NOTIFICATION_ID)
 
