@@ -18,6 +18,7 @@ object GuiImageService{
 
   val imageUploadService = ImageUploadService.getInstance
   val imageUploadedService = UploadedImageService
+  val defaultName = ""
 
 
   def getImages: List[GuiImage] = {
@@ -64,7 +65,7 @@ object GuiImageService{
     files.map(file =>{
       val dateTimeRaw = new ExifInterface(file.getAbsolutePath).getAttribute(ExifInterface.TAG_DATETIME)
       val dateTime = Try(DateTimeUtils.parseExifDateToLocalDateTime(dateTimeRaw)).getOrElse(LocalDateTime.now())
-      ImageFile(file.getAbsolutePath, file.getName, dateTime)
+      ImageFile(file.getAbsolutePath, defaultName, dateTime)
     }).toList
   }
 

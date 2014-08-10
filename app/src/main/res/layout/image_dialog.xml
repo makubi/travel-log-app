@@ -12,10 +12,17 @@
         />
 
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="300dp"
-        android:layout_height="300dp">
+        android:layout_height="300dp"
+        android:orientation="vertical">
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/dialog_image_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

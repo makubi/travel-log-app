@@ -6,7 +6,7 @@ import android.app.{Activity, DialogFragment}
 import android.net.Uri
 import android.os.Bundle
 import android.view.{View, ViewGroup, LayoutInflater}
-import android.widget.ImageView
+import android.widget.{TextView, ImageView}
 import at.droelf.travellogapp.R
 import com.squareup.picasso.Picasso
 
@@ -28,6 +28,14 @@ class ImageDialog extends DialogFragment {
       .fit()
       .centerCrop()
       .into(findView[ImageView](R.id.dialog_image, view))
+
+
+    val imgString = s"Image: ${image.imageFile.name}, ${image.imageFile.path}, ${image.imageFile.dateTime.toString()}"
+    val qString = image.queuedImage.map(img=> s"QueuedImage: ${img.name}, ${img.timezone}, ${img.dateTime.toString()}, ${img.imagePath}").getOrElse("QueuedImage:")
+    val uString = image.uploadedImage.map(img => s"UploadedImage: ${img.uploadTimeStamp.toString()}").getOrElse("UploadedImage:")
+
+    findView[TextView](R.id.dialog_image_info, view).setText(s"${imgString}\n${qString}\n${uString}")
+
 
     view
   }

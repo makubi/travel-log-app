@@ -13,7 +13,13 @@ class NetworkClient(serverBaseUrl: String) {
 
   private final val apiImageUploadBase: String = s"http://${serverBaseUrl}/api/images/uploadImage"
   private final val imageFileFormKey: String = "file"
+  private final val imageDateTimeFormKey: String = "dateTime"
+  private final val imageNameFormKey: String = "name"
+
   private final val apiGpxDataUpload: String = s"http://${serverBaseUrl}/api/tracks/upload/"
+  private final val trackTimeZoneFormKey: String = "timeZone"
+  private final val trackActivityFormKey: String = "activity"
+
   private final val username: String = "admin"
   private final val password: String = "1234"
 
@@ -29,17 +35,26 @@ class NetworkClient(serverBaseUrl: String) {
   messageConverters.add(new FormHttpMessageConverter)
 
   private[travellogapp] def uploadImage(dateTime: LocalDateTime, timezone: String, name: String, imagePath: String) = {
-    val url: String = apiImageUploadBase + "/" + getLocalDateTimeAsStringForImageUpload(dateTime) + timezone + "/" + name
-    putFileToUrlWithAuth(url, imagePath)
+    val parts: MultiValueMap[String, AnyRef] = new LinkedMultiValueMap[String, AnyRef]
+    val url: String = apiImageUploadBase
+
+    parts.add(imageDateTimeFormKey, getLocalDateTimeAsStringForImageUpload(dateTime)+timezone)
+    parts.add(imageNameFormKey, name)
+
+    putFileToUrlWithAuth(url, parts, imagePath)
   }
 
   private[travellogapp] def uploadGpxData(activity: String, timezone: String, pathToFile: String) = {
+    val parts: MultiValueMap[String, AnyRef] = new LinkedMultiValueMap[String, AnyRef]
     val url: String = apiGpxDataUpload + "/" + timezone + "/" + activity
-    putFileToUrlWithAuth(url, pathToFile)
+
+    parts.add(trackActivityFormKey, activity)
+    parts.add(trackTimeZoneFormKey, trackTimeZoneFormKey)
+
+    putFileToUrlWithAuth(url, parts, pathToFile)
   }
 
-  private[travellogapp] def putFileToUrlWithAuth(url: String, filePath: String): HttpStatus = {
-    val parts: MultiValueMap[String, AnyRef] = new LinkedMultiValueMap[String, AnyRef]
+  private[travellogapp] def putFileToUrlWithAuth(url: String, parts: MultiValueMap[String,AnyRef], filePath: String): HttpStatus = {
     parts.add(imageFileFormKey, new FileSystemResource(filePath))
 
     val requestEntity: HttpEntity[_] = new HttpEntity[AnyRef](parts, requestHeadersWithAuth)
