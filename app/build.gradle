@@ -1,26 +1,25 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android'
-apply plugin: 'android-scala'
+apply plugin: 'jp.leafytree.android-scala'
 
 android {
-    compileSdkVersion 18
-    buildToolsVersion "20.0.0"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.0"
 
     defaultConfig {
         applicationId "at.droelf.travellogapp"
         minSdkVersion 18
-        targetSdkVersion 18
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug {
-            runProguard true
+            minifyEnabled true
             proguardFile file('proguard-rules.txt')
         }
     }
@@ -50,9 +49,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    compile 'org.scala-lang:scala-library:2.11.1'
+    compile 'org.scala-lang:scala-library:2.11.7'
 
     compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
     compile 'joda-time:joda-time:2.3'
@@ -63,22 +60,21 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.picasso:picasso:2.3.3'
     compile 'com.joanzapata.android:android-iconify:1.0.6'
-
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven {
-            url "http://saturday06.github.io/gradle-android-scala-plugin/repository/snapshot"
-        }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.12+'
-        classpath 'jp.leafytree.gradle:gradle-android-scala-plugin:1.0-SNAPSHOT'
-    }
-}
-
-repositories {
-    mavenCentral()
-}
+//buildscript {
+//    repositories {
+//        mavenCentral()
+//        maven {
+//            url "http://saturday06.github.io/gradle-android-scala-plugin/repository/snapshot"
+//        }
+//    }
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:0.12+'
+//        classpath 'jp.leafytree.gradle:gradle-android-scala-plugin:1.0-SNAPSHOT'
+//    }
+//}
+//
+//repositories {
+//    mavenCentral()
+//}
